@@ -39,6 +39,7 @@ class ShopController extends AbstractController
     #[Route('/panier', name: 'panier')]
     public function panier(SessionInterface $session, ProduitRepository $produitRepository): Response
     {
+        //recuperation du panier avec l'id, la quantié et le tarif
         $panier = $session->get("panier", []);
 
         $total = 0;
@@ -69,6 +70,8 @@ class ShopController extends AbstractController
         }
  
        $session->set('panier', $panier);
+
+       dd($session);
 
        return $this->redirectToRoute("panier");
 

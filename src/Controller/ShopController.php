@@ -37,24 +37,40 @@ class ShopController extends AbstractController
     }
 
     #[Route('/panier', name: 'panier')]
-    public function panier(): Response
+    public function panier(SessionInterface $session, ProduitRepository $produitRepository): Response
     {
-        return $this->render('shop/panier.html.twig',[]);
+        $panier = $session->get("panier", []);
+
+        $total = 0;
+
+        foreach($panier as $id => $quantité){
+            $produit = $produitRepository->find($id);
+            $panier[] = [
+                "produit" => $produit,
+                "quantité" => $quantité
+            ];
+            $total += $produit->getTarif()*$quantité;
+        }
+
+        return $this->render('shop/panier.html.twig', compact("panier", "total"));
     }
 
+// La page ne fonctionne pas
     #[Route('/ajout', name: 'ajout')]
     public function ajout(Produit $produit, SessionInterface $session){
 
         $panier = $session->get('panier', []);
         $id = $produit->getId();
  
-        if(!empty ($cart[$id])) {
-            $cart[$id]++;
+        if(!empty ($panier[$id])) {
+            $panier[$id]++;
         }else {
-            $cart[$id] = 1;
+            $panier[$id] = 1;
         }
  
        $session->set('panier', $panier);
+
+       return $this->redirectToRoute("panier");
 
     }
 

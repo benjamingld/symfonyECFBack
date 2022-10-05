@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{produit.nom}}{% endblock %}
+
+{% block content %}
+    <article class="container">
+        <div class="row">
+            <div class="col-5">
+                                <div>
+                                    <img src="{{produit.image}}" alt="" class="img-fluid" style="max-width:450px">
+                                </div>
+            </div>
+            <div class="col-5">
+                                <h2 class="text-center">{{ produit. nom}}</h2>
+                                {% if produit.image is defined  and produit.image is not null %}
+                                
+                                {% endif %}
+                                <span class="d-block font-weight-bold">
+                                    <strong>Réference :</strong>
+                                    {{produit.reference}}
+                                    <br>
+                                    <strong>Description : </strong>
+                                    
+                                        {{produit.descriptionLongue}} 
+                                    <br><br>
+                                    <strong> Commander notre produits dès maintenant :</strong>
+                                
+                                </span>
+                                <form method="post" action="">
+                                    <div class="row my-3">
+                                        <div class="col-3">
+                                            <input type="number" name="quantité" class="form-control" id="quantité" value="1">
+                                            <input type="hidden" name="produit" value="{{produit.id}}">
+                                        </div>
+                                        <div class="col">
+                                            <input type="submit" value="Ajouter au panier" name="ajout"class="btn btn-success">
+                                        </div>
+                                    </div>
+                                </form>
+            </div>
+        </div>
+    </article>
+{% endblock %}

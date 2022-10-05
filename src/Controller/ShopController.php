@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Produit;
+use App\Repository\ProduitRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+
 
 class ShopController extends AbstractController
 {
@@ -21,8 +24,13 @@ class ShopController extends AbstractController
     }
 
     #[Route('/produit/{id}/{slug}', name: 'produit')]
-    public function produit(Produit $produit): Response
+    public function produit(Produit $produit, Request $request): Response
     {
+        if($request->request->get('ajout')){
+            dump($request->request->get('quantité'));
+            dump($request->request->get('produit'));
+        }
+
         return $this->render('shop/produit.html.twig', [
             'produit' => $produit,
         ]);
@@ -31,9 +39,23 @@ class ShopController extends AbstractController
     #[Route('/panier', name: 'panier')]
     public function panier(): Response
     {
-        return $this->render('shop/panier.html.twig', [
-            
-        ]);
+        return $this->render('shop/panier.html.twig',[]);
+    }
+
+    #[Route('/ajout', name: 'ajout')]
+    public function ajout(Produit $produit, SessionInterface $session){
+
+        $panier = $session->get('panier', []);
+        $id = $produit->getId();
+ 
+        if(!empty ($cart[$id])) {
+            $cart[$id]++;
+        }else {
+            $cart[$id] = 1;
+        }
+ 
+       $session->set('panier', $panier);
+
     }
 
 
